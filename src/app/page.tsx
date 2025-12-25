@@ -1,65 +1,126 @@
-import Image from "next/image";
+"use client";
+
+import { useState } from "react";
+import FileUpload from "./components/FileUpload";
+import LanguageSelector from "./components/LanguageSelector";
+import Results from "./components/Results";
+import { ArrowRight, Sparkles } from "lucide-react";
 
 export default function Home() {
+  const [file, setFile] = useState<File | null>(null);
+  const [targetLang, setTargetLang] = useState("es");
+  const [isTranslating, setIsTranslating] = useState(false);
+  const [statusTranslated, setStatusTranslated] = useState(false);
+
+  const [sourceText, setSourceText] = useState("");
+  const [translatedText, setTranslatedText] = useState("");
+  const [audioUrl, setAudioUrl] = useState<string | null>(null);
+
+  // Mock translation function for UI demonstration
+  const handleTranslate = async () => {
+    if (!file) return;
+    setIsTranslating(true);
+    setAudioUrl(null); // Reset previous
+    
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("targetLang", targetLang); // Pass full name like "Spanish" or code "es"
+
+      const response = await fetch("/api/translate", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) throw new Error("Translation failed");
+
+      // 1. Extract Headers (Text Data)
+      const srcText = decodeURIComponent(response.headers.get("X-Source-Text") || "");
+      const transText = decodeURIComponent(response.headers.get("X-Translated-Text") || "");
+      
+      setSourceText(srcText);
+      setTranslatedText(transText);
+
+      // 2. Handle Audio Blob
+      const audioBlob = await response.blob();
+      const url = URL.createObjectURL(audioBlob);
+      setAudioUrl(url);
+
+      // 3. Auto-play
+      const audio = new Audio(url);
+      audio.play();
+
+    } catch (error) {
+      alert("Something went wrong during translation.");
+      console.error(error);
+    } finally {
+      setIsTranslating(false);
+      setStatusTranslated(true);
+    }
+};
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+    <main className="px-20  ">
+      {/* Main Action Card - M3 Container */}
+      <div className="mt-10 w-full bg-[#0f0e0e]  rounded-xl p-6 md:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border  space-y-8 animate-in zoom-in-95 duration-500 delay-150">
+        <section className="space-y-2">
+          <h1 className="text-lg ">
+            Upload an audio file to instantly translate voice to foreign speech
+            using AI.
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+          <h2 className="text-sm font-medium text-[#ffffff7d] ">
+            STEP 1: SOURCE AUDIO
+          </h2>
+          <FileUpload onFileSelected={setFile} />
+        </section>
+
+        {/* Divider */}
+
+        <section className="space-y-2">
+          <h2 className="text-sm font-medium text-[#ffffff7d] ">
+            STEP 2: TARGET LANGUAGE
+          </h2>
+          <LanguageSelector
+            selectedLang={targetLang}
+            setSelectedLang={setTargetLang}
+          />
+        </section>
+
+        {/* Filled Button */}
+        <div className="w-full flex border-t-2 pt-8 items-center justify-end">
+          <button
+            onClick={handleTranslate}
+            disabled={!file || isTranslating || statusTranslated}
+            className={`
+            px-4 bg-white text-black relative overflow-hidden rounded-lg h-12 text-lg font-medium transition-all
+            flex items-center justify-center gap-3 shadow-md hover:shadow-lg active:shadow-sm
+            ${
+              !file || isTranslating || statusTranslated
+                ? " cursor-not-allowed opacity-50 shadow-none"
+                : "opacity-100 hover:opacity-90 shadow-lg"
+            }
+          `}
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+            {isTranslating ? (
+              <>
+                <div className="h-5 w-5 border-2  border-t-transparent rounded-full animate-spin"></div>
+                <span>Processing...</span>
+              </>
+            ) : (
+              <>
+                <span>Translate Audio</span>
+                <Sparkles className="h-5 w-5" />
+              </>
+            )}
+          </button>
         </div>
-      </main>
-    </div>
+
+        
+      </div>
+      {/* Results Section - M3 Card */}
+        {(sourceText || translatedText) && (
+          <Results sourceText={sourceText} translatedText={translatedText} audioUrl={audioUrl} />
+        )}
+    </main>
   );
 }

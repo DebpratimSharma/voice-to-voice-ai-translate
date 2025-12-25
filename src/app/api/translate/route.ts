@@ -1,0 +1,91 @@
+import { NextResponse } from "next/server";
+import Groq from "groq-sdk";
+
+export const maxDuration = 30; // Extends to 30 seconds
+
+const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+
+export async function POST(req: Request) {
+  try {
+    const formData = await req.formData();
+    const file = formData.get("file") as File;
+    const targetLang = formData.get("targetLang") as string;
+
+    if (!file || !targetLang) {
+      return NextResponse.json({ error: "Missing file or language" }, { status: 400 });
+    }
+
+    // --- STEP 1: Transcription (STT) with Groq Whisper ---
+    // We pass the raw file directly to Groq
+    const transcription = await groq.audio.transcriptions.create({
+      file: file,
+      model: "whisper-large-v3",
+      response_format: "json",
+    });
+
+    const sourceText = transcription.text;
+    console.log("Transcribed:", sourceText);
+
+    // --- STEP 2: Translation with Groq Llama 3 ---
+    const translationCompletion = await groq.chat.completions.create({
+      messages: [
+        {
+          role: "system",
+          content: `You are a professional translator. Translate the user's text into ${targetLang}. Output ONLY the translated text, nothing else.`,
+        },
+        {
+          role: "user",
+          content: sourceText,
+        },
+      ],
+      model: "llama-3.3-70b-versatile",
+    });
+
+    const translatedText = translationCompletion.choices[0]?.message?.content || "";
+    console.log("Translated:", translatedText);
+
+    // --- STEP 3: Synthesis (TTS) with ElevenLabs ---
+    // Using a standard ID for a pleasant voice (e.g., "Rachel" - 21m00Tcm4TlvDq8ikWAM)
+    const ELEVENLABS_VOICE_ID = "21m00Tcm4TlvDq8ikWAM"; 
+    
+    const ttsResponse = await fetch(
+      `https://api.elevenlabs.io/v1/text-to-speech/${ELEVENLABS_VOICE_ID}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "xi-api-key": process.env.ELEVENLABS_API_KEY!,
+        },
+        body: JSON.stringify({
+          text: translatedText,
+          model_id: "eleven_multilingual_v2", // Better for foreign languages
+          voice_settings: {
+            stability: 0.5,
+            similarity_boost: 0.5,
+          },
+        }),
+      }
+    );
+
+    if (!ttsResponse.ok) {
+      throw new Error("ElevenLabs API Error");
+    }
+
+    // Get audio as ArrayBuffer
+    const audioArrayBuffer = await ttsResponse.arrayBuffer();
+
+    // Return the Audio + Metadata headers
+    // We send the text results in headers so the frontend can display them alongside the audio
+    return new Response(audioArrayBuffer, {
+      headers: {
+        "Content-Type": "audio/mpeg",
+        "X-Source-Text": encodeURIComponent(sourceText), // Header hack to send data back with file
+        "X-Translated-Text": encodeURIComponent(translatedText),
+      },
+    });
+
+  } catch (error) {
+    console.error("Processing failed:", error);
+    return NextResponse.json({ error: "Translation failed" }, { status: 500 });
+  }
+}
