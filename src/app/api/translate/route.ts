@@ -27,8 +27,12 @@ export async function POST(req: Request) {
       response_format: "json",
     });
 
-    const sourceText = transcription.text;
+    const sourceText = transcription?.text;
     console.log("Transcribed:", sourceText);
+    if (!sourceText) {
+      console.error("Transcription empty or failed:", transcription);
+      return NextResponse.json({ error: "Transcription failed. Please try a different audio or format." }, { status: 502 });
+    }
 
     // --- STEP 2: Translation with Groq Llama 3 ---
     const translationCompletion = await groq.chat.completions.create({
@@ -64,8 +68,8 @@ export async function POST(req: Request) {
         },
         body: JSON.stringify({
           text: translatedText,
-          model_id: "eleven_multilingual_v2", // Better for foreign languages
-          //language_code: targetLang,
+          model_id: "eleven_turbo_v2_5", // Better for foreign languages
+          language_code: targetLang,
           voice_settings: {
             stability: 0.5,
             similarity_boost: 0.5,
@@ -75,7 +79,9 @@ export async function POST(req: Request) {
     );
 
     if (!ttsResponse.ok) {
-      throw new Error("ElevenLabs API Error");
+      const bodyText = await ttsResponse.text().catch(() => "");
+      console.error("ElevenLabs TTS failed", ttsResponse.status, bodyText);
+      return NextResponse.json({ error: `ElevenLabs TTS error: ${ttsResponse.status} ${bodyText}` }, { status: 502 });
     }
 
     // Get audio as ArrayBuffer
@@ -91,8 +97,9 @@ export async function POST(req: Request) {
       },
     });
 
-  } catch (error) {
+  } catch (error: any) {
     console.error("Processing failed:", error);
-    return NextResponse.json({ error: "Translation failed" }, { status: 500 });
+    const msg = error?.message || "Translation failed";
+    return NextResponse.json({ error: msg }, { status: 500 });
   }
 }
