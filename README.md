@@ -1,36 +1,94 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AI Voice Translator (voice-translator) 🔊🌐
 
-## Getting Started
+A small Next.js app that turns uploaded audio into translated text. It's built to be simple and practical — upload voice files, pick the source and target languages, then get a transcription and translation in one go.
 
-First, run the development server:
+---
+
+## Highlights
+
+- Casual, developer-friendly UI for quickly translating speech files
+- App Router powered Next.js + TypeScript
+- Minimal components: `FileUpload`, `LanguageSelector`, `Results`, `Navbar`
+- Server-side API route at `src/app/api/translate/route.ts` that handles upload, transcription, and translation
+
+---
+
+## Tech stack
+
+- Next.js (App Router)
+- React + TypeScript
+- Plain CSS (global styles in `src/app/globals.css`) and small reusable UI components
+- Minimal server-side API for handling translations (`/api/translate`)
+
+---
+
+## Quick start 🚀
+
+1. Install deps:
+
+```bash
+npm install
+# or
+pnpm install
+```
+
+2. Run dev server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+3. Open http://localhost:3000 (or try the live demo: https://ai-voice-translator.vercel.app/)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+You should see the app where you can upload an audio file and select languages.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## Usage (what to expect) 💡
 
-To learn more about Next.js, take a look at the following resources:
+- Upload an audio file (wav, mp3, etc.) via the `FileUpload` component
+- Choose a source language and a target language using `LanguageSelector`
+- The app sends the file to the `/api/translate` endpoint, which returns a transcription and a translated string
+- Results are rendered by `Results` component — both the original transcription and the translated text
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Development notes 🔧
 
-## Deploy on Vercel
+- UI components live in `src/app/components/` (e.g., `FileUpload.tsx`, `LanguageSelector.tsx`, `Results.tsx`).
+- Server logic is in `src/app/api/translate/route.ts` — check this file to see which speech or translation providers are wired up and what environment variables are expected.
+- Helpers and small utilities are in `src/lib/utils.ts`.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+If you need to add a new provider or change request/response shape, the API route is the place to update.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## Environment variables
+
+This project may require API keys for speech/translation providers (for example: `OPENAI_API_KEY`, `SOME_SPEECH_API_KEY`, etc.). See `src/app/api/translate/route.ts` for exact variable names and expected configuration.
+
+---
+
+## Tests & CI
+
+There aren't any tests included by default. If you add tests, consider using Jest or Playwright for component and E2E coverage.
+
+---
+
+## Contributing & ideas 🤝
+
+- Add more robust audio input (live mic capture)
+- Improve results UI (timestamps, speaker separation)
+- Add caching for repeated translations
+
+Feel free to open issues or PRs — small improvements make a big difference.
+
+---
+
+## License
+
+This project is open source — include your preferred license here.
+
+---
+
+Need help figuring something out? Check the `src/app/api/translate/route.ts` to see how the backend expects requests and what keys you might need. Happy coding! ✨

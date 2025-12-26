@@ -70,13 +70,13 @@ export default function Home() {
   };
 
   return (
-    <main className="px-20  ">
+    <main className="lg:px-20 md:px-10 px-5  ">
       {/* Main Action Card - M3 Container */}
-      <div className="mt-10 w-full bg-[#0f0e0e]  rounded-xl p-6 md:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border  space-y-8 animate-in zoom-in-95 duration-500 delay-150">
+      <div className="md:mt-10 mt-6 w-full bg-[#0f0e0e]  rounded-xl p-6 lg:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border  space-y-8 animate-in zoom-in-95 duration-500 delay-150">
         <section className="space-y-2">
-          <h1 className="text-lg ">
+          <h1 className="text-2xl md:text-xl">
             Upload an audio file to instantly translate voice to foreign speech
-            using AI.
+            using AI
           </h1>
           <h2 className="text-sm font-medium text-[#ffffff7d] ">
             STEP 1: SOURCE AUDIO

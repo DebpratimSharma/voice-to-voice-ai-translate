@@ -60,8 +60,8 @@ export default function Results({ sourceText, translatedText, audioUrl }: Result
         <span className="text-xs text-gray-500 font-mono">RESULTS</span>
         <div className="h-px bg-[#333] grow" />
       </div>
-      <div className="w-full flex gap-5 ">
-        <ScrollArea className="bg-[#0f0e0e] w-2/3 max-h-50 rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border ">
+      <div className="w-full flex  md:flex-row flex-col gap-5 ">
+        <ScrollArea className="bg-[#0f0e0e] md:w-1/2  lg:w-2/3 w-full max-h-50 rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border ">
           {/* Source Text */}
           <div className="mb-6 px-5 py-3">
             <p className="text-xs font-bold uppercase tracking-wider mb-2">
@@ -80,7 +80,7 @@ export default function Results({ sourceText, translatedText, audioUrl }: Result
         </ScrollArea>
         {/* Audio Player - modern controls */}
         {audioUrl && (
-          <div className="w-1/3 h-50 rounded-xl flex flex-col items-stretch justify-between pt-3 shadow-sm border bg-white/5">
+          <div className=" lg:w-1/3 md:w-1/2 w-full h-50 rounded-xl flex flex-col items-stretch justify-between pt-3 shadow-sm border bg-white/5">
             <audio ref={audioRef} src={audioUrl} className="hidden " />
 
             <div className="flex items-center justify-between  px-7 gap-3 py-2">
@@ -138,12 +138,12 @@ export default function Results({ sourceText, translatedText, audioUrl }: Result
               <a
                 href={audioUrl}
                 download={"translation.wav"}
-                className="ml-3 inline-flex items-center gap-2 px-3 py-2 rounded-md bg-gray-200 hover:bg-gray-300 text-sm transition-all duration-200"
+                className=" inline-flex items-center gap-2 px-3 py-2 rounded-md bg-gray-200 hover:bg-gray-300 text-sm transition-all duration-200"
                 aria-label="Download audio"
                 rel="noopener noreferrer"
               >
                 <Download className="text-black w-4 h-4" />
-                <span className=" text-black hidden md:inline">Download</span>
+                <span className=" text-black hidden  md:inline">Download</span>
               </a>
 
             </div>

@@ -14,7 +14,7 @@ const Navbar = () => {
           height={40}
           priority
         />
-        <span className='font-semibold text-sm'>AI Voice Translator</span>
+        <span className='font-semibold text-md'>AI Voice Translator</span>
       </div>
 
       <Link href="https://github.com/DebpratimSharma/voice-to-voice-ai-translate"
