@@ -35,7 +35,9 @@ export async function POST(req: Request) {
       messages: [
         {
           role: "system",
-          content: `You are a professional translator. Translate the user's text into ${targetLang}. Output ONLY the translated text, nothing else.`,
+          content: `You are a professional translator. Translate the following text to ${targetLang}. 
+      Output ONLY the translated text. Do not include explanations or phonetic spellings. 
+      Keep the meaning intact and ensure natural phrasing in the target language.`,
         },
         {
           role: "user",
@@ -63,6 +65,7 @@ export async function POST(req: Request) {
         body: JSON.stringify({
           text: translatedText,
           model_id: "eleven_multilingual_v2", // Better for foreign languages
+          //language_code: targetLang,
           voice_settings: {
             stability: 0.5,
             similarity_boost: 0.5,

@@ -43,38 +43,24 @@ const languages = [
   { code: "es", name: "Spanish" },
   { code: "fr", name: "French" },
   { code: "de", name: "German" },
-  { code: "it", name: "Italian" },
-  { code: "pt", name: "Portuguese" },
-  { code: "pt-BR", name: "Portuguese (Brazil)" },
   { code: "ru", name: "Russian" },
-  { code: "zh-CN", name: "Chinese (Simplified)" },
-  { code: "zh-TW", name: "Chinese (Traditional)" },
+  { code: "zh", name: "Chinese" },
   { code: "ja", name: "Japanese" },
-  { code: "ko", name: "Korean" },
+  //{ code: "ko", name: "Korean" },
   { code: "ar", name: "Arabic" },
   { code: "hi", name: "Hindi" },
-  { code: "bn", name: "Bengali" },
+   // Supported in v3/Turbo
   { code: "tr", name: "Turkish" },
-  { code: "vi", name: "Vietnamese" },
   { code: "pl", name: "Polish" },
   { code: "nl", name: "Dutch" },
   { code: "sv", name: "Swedish" },
-  { code: "el", name: "Greek" },
-  { code: "he", name: "Hebrew" },
-  { code: "th", name: "Thai" },
-  { code: "id", name: "Indonesian" },
-  { code: "ms", name: "Malay" },
-  { code: "cs", name: "Czech" },
-  { code: "ro", name: "Romanian" },
-  { code: "hu", name: "Hungarian" },
-  { code: "uk", name: "Ukrainian" },
-  { code: "fa", name: "Persian (Farsi)" },
+  // Persian (fa) is currently only in the experimental v3 model
 ];
 
 //sample voices
 const voices = [
   { id: "21m00Tcm4TlvDq8ikWAM", name: "Rachel (Female - Soft)" },
-  { id: "cgSgspJ2msm6cl6m55bi", name: "Jessica (Female - Mature)" },
+//  { id: "cgSgspJ2msm6cl6m55bi", name: "Jessica (Female - Mature)" },
   { id: "onwK4e9ZLuTAKqWW03F9", name: "Daniel (Male - Deep)" },
   { id: "pNInz6obpgDQGcFmaJgB", name: "Adam (Male - Deep)" },
 ];
