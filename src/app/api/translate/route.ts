@@ -10,6 +10,10 @@ export async function POST(req: Request) {
     const formData = await req.formData();
     const file = formData.get("file") as File;
     const targetLang = formData.get("targetLang") as string;
+    // Accept multiple possible keys (voiceId, voiceID, voice) to be flexible with client form keys
+    const voiceIdRaw = formData.get("voiceId") ?? formData.get("voiceID") ?? formData.get("voice") ?? "21m00Tcm4TlvDq8ikWAM";
+    const voiceId = String(voiceIdRaw);
+    console.log("Using voiceId:", voiceId); // debug info
 
     if (!file || !targetLang) {
       return NextResponse.json({ error: "Missing file or language" }, { status: 400 });
@@ -45,8 +49,8 @@ export async function POST(req: Request) {
     console.log("Translated:", translatedText);
 
     // --- STEP 3: Synthesis (TTS) with ElevenLabs ---
-    // Using a standard ID for a pleasant voice (e.g., "Rachel" - 21m00Tcm4TlvDq8ikWAM)
-    const ELEVENLABS_VOICE_ID = "21m00Tcm4TlvDq8ikWAM"; 
+    // Using a custom ID for voice (e.g., "Rachel" - 21m00Tcm4TlvDq8ikWAM)
+    const ELEVENLABS_VOICE_ID = voiceId.toString(); 
     
     const ttsResponse = await fetch(
       `https://api.elevenlabs.io/v1/text-to-speech/${ELEVENLABS_VOICE_ID}`,

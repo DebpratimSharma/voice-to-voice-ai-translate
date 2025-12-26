@@ -8,6 +8,7 @@ import { Sparkles } from "lucide-react";
 export default function Home() {
   const [file, setFile] = useState<File | null>(null);
   const [targetLang, setTargetLang] = useState("");
+  const [selectedVoice, setSelectedVoice] = useState("21m00Tcm4TlvDq8ikWAM"); // Default: Rachel
   const [isTranslating, setIsTranslating] = useState(false);
   const [statusTranslated, setStatusTranslated] = useState(false);
   const [sourceText, setSourceText] = useState("");
@@ -24,6 +25,7 @@ export default function Home() {
       const formData = new FormData();
       formData.append("file", file);
       formData.append("targetLang", targetLang); // Pass full name like "Spanish" or code "es"
+      formData.append("voiceId", selectedVoice); // Pass selected voice ID
 
       const response = await fetch("/api/translate", {
         method: "POST",
@@ -96,6 +98,8 @@ export default function Home() {
           <LanguageSelector
             selectedLang={targetLang}
             setSelectedLang={setTargetLang}
+            selectedVoice={selectedVoice}
+            setSelectedVoice={setSelectedVoice}
           />
         </section>
 
@@ -131,7 +135,7 @@ export default function Home() {
       </div>
 
       {/* Results Section - M3 Card */}
-      
+
       {(sourceText || translatedText) && (
         <>
           <Results
