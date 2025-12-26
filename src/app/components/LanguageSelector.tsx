@@ -153,7 +153,7 @@ export default function LanguageSelector({
         </div>
       </div>
       <div className="w-full md:w-1/2 flex items-center">
-        <MicVocal className="mr-3  h-6 w-6 text-white" />
+        <MicVocal className="mr-[15px]  h-6 w-6 text-white" />
         <Select value={selectedVoice} onValueChange={(v) => setSelectedVoice(v)}>
           <SelectTrigger className="bg-[#121212] hover:bg-[#262626]">
             <SelectValue placeholder="Select Voice" />
