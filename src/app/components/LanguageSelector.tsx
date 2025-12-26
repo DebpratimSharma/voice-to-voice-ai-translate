@@ -158,7 +158,7 @@ export default function LanguageSelector({
           <SelectTrigger className="bg-[#121212] hover:bg-[#262626]">
             <SelectValue placeholder="Select Voice" />
           </SelectTrigger>
-          <SelectContent className="w-1/2">
+          <SelectContent className="">
             {voices.map((voice) => (
               <SelectItem key={voice.id} value={voice.id}>
                 {voice.name}
