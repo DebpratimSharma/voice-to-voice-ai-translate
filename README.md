@@ -1,6 +1,6 @@
 # AI Voice Translator (voice-translator) 🔊🌐
 
-A small Next.js app that turns uploaded audio into translated text. It's built to be simple and practical — upload voice files, pick the source and target languages, then get a transcription and translation in one go.
+A small Next.js app that turns uploaded audio into translated text. It's built to be simple and practical — upload voice files, pick the source and target languages, then get a transcription and translation in one go. Chekcout live website at https://ai-voice-translator.vercel.app/
 
 ---
 
@@ -17,7 +17,7 @@ A small Next.js app that turns uploaded audio into translated text. It's built t
 
 - Next.js (App Router)
 - React + TypeScript
-- Plain CSS (global styles in `src/app/globals.css`) and small reusable UI components
+- Tailwind and reusable UI components
 - Minimal server-side API for handling translations (`/api/translate`)
 
 ---
@@ -65,7 +65,7 @@ If you need to add a new provider or change request/response shape, the API rout
 
 ## Environment variables
 
-This project may require API keys for speech/translation providers (for example: `OPENAI_API_KEY`, `SOME_SPEECH_API_KEY`, etc.). See `src/app/api/translate/route.ts` for exact variable names and expected configuration.
+This project may require API keys for speech/translation providers (for example: `GROQ_API_KEY`, `ELEVENLABS_API_KEY`, etc.). See `src/app/api/translate/route.ts` for exact variable names and expected configuration.
 
 ---
 
