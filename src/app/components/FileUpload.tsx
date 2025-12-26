@@ -68,9 +68,9 @@ export default function FileUpload({ onFileSelected }: FileUploadProps) {
       >
         {fileName ? (
           // Selected State
-          <div className="flex flex-col items-center animate-in fade-in zoom-in">
+          <div className="flex flex-col items-center w-full px-4 animate-in fade-in zoom-in">
             <Music className="w-12 h-12 mb-2" />
-            <p className="text-lg font-medium ">{fileName}</p>
+            <p className="text-lg font-medium w-full truncate text-center" title={fileName}>{fileName}</p>
             <p className="text-sm">Click to change file</p>
           </div>
         ) : (
