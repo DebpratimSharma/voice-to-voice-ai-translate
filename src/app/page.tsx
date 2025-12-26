@@ -8,7 +8,7 @@ import { ArrowRight, Sparkles } from "lucide-react";
 
 export default function Home() {
   const [file, setFile] = useState<File | null>(null);
-  const [targetLang, setTargetLang] = useState("es");
+  const [targetLang, setTargetLang] = useState("");
   const [isTranslating, setIsTranslating] = useState(false);
   const [statusTranslated, setStatusTranslated] = useState(false);
 
@@ -18,7 +18,7 @@ export default function Home() {
 
   // Mock translation function for UI demonstration
   const handleTranslate = async () => {
-    if (!file) return;
+    if (!file || !targetLang) return;
     setIsTranslating(true);
     setAudioUrl(null); // Reset previous
     
@@ -57,7 +57,17 @@ export default function Home() {
       setIsTranslating(false);
       setStatusTranslated(true);
     }
-};
+  };
+
+  const handleClear = () => {
+    if (audioUrl) {
+      try { URL.revokeObjectURL(audioUrl); } catch {}
+    }
+    setSourceText("");
+    setTranslatedText("");
+    setAudioUrl(null);
+    setStatusTranslated(false);
+  };
 
   return (
     <main className="px-20  ">
@@ -90,12 +100,12 @@ export default function Home() {
         <div className="w-full flex border-t-2 pt-8 items-center justify-end">
           <button
             onClick={handleTranslate}
-            disabled={!file || isTranslating || statusTranslated}
+            disabled={!file || !targetLang || isTranslating || statusTranslated}
             className={`
-            px-4 bg-white text-black relative overflow-hidden rounded-lg h-12 text-lg font-medium transition-all
+            px-4 bg-white text-black relative overflow-hidden rounded-md h-12 text-lg font-medium transition-all
             flex items-center justify-center gap-3 shadow-md hover:shadow-lg active:shadow-sm
             ${
-              !file || isTranslating || statusTranslated
+              !file || !targetLang || isTranslating || statusTranslated
                 ? " cursor-not-allowed opacity-50 shadow-none"
                 : "opacity-100 hover:opacity-90 shadow-lg"
             }
@@ -119,7 +129,21 @@ export default function Home() {
       </div>
       {/* Results Section - M3 Card */}
         {(sourceText || translatedText) && (
-          <Results sourceText={sourceText} translatedText={translatedText} audioUrl={audioUrl} />
+          <>
+            <Results sourceText={sourceText} translatedText={translatedText} audioUrl={audioUrl} />
+            <div className="w-full flex items-center justify-center mb-5">
+              <div className="h-px bg-[#333] grow" />
+              
+              <button
+                onClick={handleClear}
+                className="px-4 py-2 text-sm text-gray-500 hover:cursor-pointer hover:text-gray-400 transition"
+                aria-label="Clear results"
+              >
+                Clear
+              </button>
+              <div className="h-px bg-[#333] grow" />
+            </div>
+          </>
         )}
     </main>
   );
