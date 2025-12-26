@@ -54,7 +54,7 @@ export default function Results({ sourceText, translatedText, audioUrl }: Result
   };
 
   return (
-    <div className="w-full py-6 animate-in slide-in-from-bottom-2">
+    <div className="flex flex-col gap-6 w-full pb-5 animate-in slide-in-from-bottom-2">
       <div className="flex items-center gap-4 mb-4 fade-in">
         <div className="h-px bg-[#333] grow" />
         <span className="text-xs text-gray-500 font-mono">RESULTS</span>

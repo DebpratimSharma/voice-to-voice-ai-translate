@@ -5,13 +5,14 @@ import Link from 'next/link'
 const Navbar = () => {
   return (
     <header className='sticky bg-black  z-50 top-0 left-0 right-0 h-16 flex items-center justify-between px-6 md:px-20 gap-3 border-b border-gray-600'>
-      <div className='flex items-center gap-3 rounded-full overflow-hidden'>
+      <div className='flex items-center gap-3  overflow-hidden'>
         <Image
-          src="/image.png"
+          src="/icon.png"
+          className='rounded-full'
           
           alt="Logo"
-          width={40}
-          height={40}
+          width={35}
+          height={35}
           priority
         />
         <span className='font-semibold text-md'>AI Voice Translator</span>

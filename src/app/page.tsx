@@ -1,17 +1,15 @@
 "use client";
-
 import { useState } from "react";
+import Results from "./components/Results";
 import FileUpload from "./components/FileUpload";
 import LanguageSelector from "./components/LanguageSelector";
-import Results from "./components/Results";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { Sparkles } from "lucide-react";
 
 export default function Home() {
   const [file, setFile] = useState<File | null>(null);
   const [targetLang, setTargetLang] = useState("");
   const [isTranslating, setIsTranslating] = useState(false);
   const [statusTranslated, setStatusTranslated] = useState(false);
-
   const [sourceText, setSourceText] = useState("");
   const [translatedText, setTranslatedText] = useState("");
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
@@ -21,7 +19,7 @@ export default function Home() {
     if (!file || !targetLang) return;
     setIsTranslating(true);
     setAudioUrl(null); // Reset previous
-    
+
     try {
       const formData = new FormData();
       formData.append("file", file);
@@ -35,9 +33,13 @@ export default function Home() {
       if (!response.ok) throw new Error("Translation failed");
 
       // 1. Extract Headers (Text Data)
-      const srcText = decodeURIComponent(response.headers.get("X-Source-Text") || "");
-      const transText = decodeURIComponent(response.headers.get("X-Translated-Text") || "");
-      
+      const srcText = decodeURIComponent(
+        response.headers.get("X-Source-Text") || ""
+      );
+      const transText = decodeURIComponent(
+        response.headers.get("X-Translated-Text") || ""
+      );
+
       setSourceText(srcText);
       setTranslatedText(transText);
 
@@ -49,7 +51,6 @@ export default function Home() {
       // 3. Auto-play
       const audio = new Audio(url);
       audio.play();
-
     } catch (error) {
       alert("Something went wrong during translation.");
       console.error(error);
@@ -61,7 +62,9 @@ export default function Home() {
 
   const handleClear = () => {
     if (audioUrl) {
-      try { URL.revokeObjectURL(audioUrl); } catch {}
+      try {
+        URL.revokeObjectURL(audioUrl);
+      } catch {}
     }
     setSourceText("");
     setTranslatedText("");
@@ -70,9 +73,9 @@ export default function Home() {
   };
 
   return (
-    <main className="lg:px-20 md:px-10 px-5  ">
+    <main className="lg:px-20 md:px-10 px-5 ">
       {/* Main Action Card - M3 Container */}
-      <div className="md:mt-10 mt-6 w-full bg-[#0f0e0e]  rounded-xl p-6 lg:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border  space-y-8 animate-in zoom-in-95 duration-500 delay-150">
+      <div className="md:my-10 my-6 w-full bg-[#0f0e0e]  rounded-xl p-6 lg:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border  space-y-8 animate-in zoom-in-95 duration-500 delay-150">
         <section className="space-y-2">
           <h1 className="text-2xl md:text-xl">
             Upload an audio file to instantly translate voice to foreign speech
@@ -97,6 +100,7 @@ export default function Home() {
         </section>
 
         {/* Filled Button */}
+
         <div className="w-full flex border-t-2 pt-8 items-center justify-end">
           <button
             onClick={handleTranslate}
@@ -124,27 +128,28 @@ export default function Home() {
             )}
           </button>
         </div>
-
-        
       </div>
+
       {/* Results Section - M3 Card */}
-        {(sourceText || translatedText) && (
-          <>
-            <Results sourceText={sourceText} translatedText={translatedText} audioUrl={audioUrl} />
-            <div className="w-full flex items-center justify-center mb-5">
-              <div className="h-px bg-[#333] grow" />
-              
-              <button
-                onClick={handleClear}
-                className="px-4 py-2 text-sm text-gray-500 hover:cursor-pointer hover:text-gray-400 transition"
-                aria-label="Clear results"
-              >
-                Clear
-              </button>
-              <div className="h-px bg-[#333] grow" />
-            </div>
-          </>
-        )}
+      
+      {(sourceText || translatedText) && (
+        <>
+          <Results
+            sourceText={sourceText}
+            translatedText={translatedText}
+            audioUrl={audioUrl}
+          />
+          <div className="w-full flex items-center justify-center mb-5">
+            <button
+              onClick={handleClear}
+              className="px-4 py-2 text-md text-gray-500 hover:cursor-pointer hover:text-gray-400 transition"
+              aria-label="Clear results"
+            >
+              Clear Response &amp; Translate Again
+            </button>
+          </div>
+        </>
+      )}
     </main>
   );
 }
