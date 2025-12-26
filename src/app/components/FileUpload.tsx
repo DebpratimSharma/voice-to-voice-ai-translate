@@ -13,11 +13,11 @@ export default function FileUpload({ onFileSelected }: FileUploadProps) {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleFile = (file: File) => {
-    if (file && file.type === "audio/mpeg") {
-      setFileName(file.name);
-      onFileSelected(file);
+    if (file && file.type.startsWith("audio/")) {
+  setFileName(file.name);
+  onFileSelected(file);
     } else {
-      alert("Please upload a valid .mp3 file.");
+      alert("Please select a valid audio file (MP3, WAV, M4A, etc.)");
     }
   };
 
@@ -45,7 +45,7 @@ export default function FileUpload({ onFileSelected }: FileUploadProps) {
         title="file"
         ref={inputRef}
         type="file"
-        accept=".mp3,audio/mpeg"
+        accept="audio/mp3,audio/mpeg,audio/wav,audio/m4a,audio/ogg,audio/webm,audio/flac"
         className="hidden"
         onChange={handleChange}
       />
@@ -80,7 +80,7 @@ export default function FileUpload({ onFileSelected }: FileUploadProps) {
             <p className="text-lg font-medium mb-1 text-m3-on-surface">
               Upload Audio File
             </p>
-            <p className="text-sm">Drag & drop or click to browse (.mp3)</p>
+            <p className="text-sm">Drag & drop or click to browse (.mp3/.m4a/.wav/.mpeg/.ogg/.webm/.flac)</p>
           </div>
         )}
       </div>
