@@ -1,21 +1,33 @@
 "use client";
 
 import { UploadCloud, Music } from "lucide-react";
-import { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 
 interface FileUploadProps {
-  onFileSelected: (file: File) => void;
+  onFileSelected: (file: File | null) => void;
+  file?: File | null;
 }
 
-export default function FileUpload({ onFileSelected }: FileUploadProps) {
+export default function FileUpload({ onFileSelected, file }: FileUploadProps) {
   const [dragActive, setDragActive] = useState(false);
   const [fileName, setFileName] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  // Sync internal UI when parent clears/replaces the file
+  useEffect(() => {
+    if (file && file.name) {
+      setFileName(file.name);
+    } else {
+      setFileName(null);
+      // Clear native input so the same file can be reselected
+      if (inputRef.current) inputRef.current.value = "";
+    }
+  }, [file]);
+
   const handleFile = (file: File) => {
     if (file && file.type.startsWith("audio/")) {
-  setFileName(file.name);
-  onFileSelected(file);
+      setFileName(file.name);
+      onFileSelected(file);
     } else {
       alert("Please select a valid audio file (MP3, WAV, M4A, etc.)");
     }
@@ -77,10 +89,10 @@ export default function FileUpload({ onFileSelected }: FileUploadProps) {
           // Idle State
           <div className="flex flex-col items-center">
             <UploadCloud className="w-12 h-12 mb-4 " />
-            <p className="text-lg font-medium mb-1 text-m3-on-surface">
-              Upload Audio File
+            <p className="text-lg text-center font-medium mb-1 text-m3-on-surface">
+              Upload Audio File upto 10MB
             </p>
-            <p className="text-sm">Drag & drop or click to browse (.mp3/.m4a/.wav/.mpeg/.ogg/.webm/.flac)</p>
+            <p className="text-sm text-center">Drag & drop or click to browse </p>
           </div>
         )}
       </div>

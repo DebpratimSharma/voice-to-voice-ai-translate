@@ -61,7 +61,7 @@ export default function Results({ sourceText, translatedText, audioUrl }: Result
         <div className="h-px bg-[#333] grow" />
       </div>
       <div className="w-full flex  md:flex-row flex-col gap-5 ">
-        <ScrollArea className="bg-[#0f0e0e] md:w-1/2  lg:w-2/3 w-full max-h-50 rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border ">
+        <ScrollArea type="scroll" className="max-md:overflow-auto bg-[#0f0e0e] md:w-1/2  lg:w-2/3 w-full max-h-80 md:max-h-50 rounded-xl border ">
           {/* Source Text */}
           <div className="mb-6 px-5 py-3">
             <p className="text-xs font-bold uppercase tracking-wider mb-2">

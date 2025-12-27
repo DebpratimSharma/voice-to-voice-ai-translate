@@ -3,6 +3,7 @@ import { useState } from "react";
 import Results from "./components/Results";
 import FileUpload from "./components/FileUpload";
 import LanguageSelector from "./components/LanguageSelector";
+import { VoiceRecorder } from "./components/VoiceRecorder";
 import { Sparkles } from "lucide-react";
 
 export default function Home() {
@@ -14,6 +15,9 @@ export default function Home() {
   const [sourceText, setSourceText] = useState("");
   const [translatedText, setTranslatedText] = useState("");
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
+  const handleRecordedFile = (recordedFile: File) => {
+    setFile(recordedFile);
+  };
 
   // Mock translation function for UI demonstration
   const handleTranslate = async () => {
@@ -27,12 +31,24 @@ export default function Home() {
       formData.append("targetLang", targetLang); // Pass full name like "Spanish" or code "es"
       formData.append("voiceId", selectedVoice); // Pass selected voice ID
 
+      // 1. Get the key from storage
+      const userApiKey = localStorage.getItem("ai_voice_api_key");
+      // 2. Prepare headers object
+      const headers: HeadersInit = {};
+      if (userApiKey) {
+        headers["x-user-elevenlabs-key"] = userApiKey;
+      }
+
       const response = await fetch("/api/translate", {
         method: "POST",
+        headers: headers, //3. Attach headers
         body: formData,
       });
 
-      if (!response.ok) throw new Error("Translation failed");
+      if (!response.ok) {
+        if (response.status === 401) throw new Error("Invalid API Key");
+        throw new Error("Translation failed");
+      }
 
       // 1. Extract Headers (Text Data)
       const srcText = decodeURIComponent(
@@ -53,12 +69,26 @@ export default function Home() {
       // 3. Auto-play
       const audio = new Audio(url);
       audio.play();
+
+      // Mark that translation completed successfully
+      setStatusTranslated(true);
     } catch (error) {
+      // Keep the existing alert pattern, but also reset the upload and selections
       alert("Something went wrong during translation.");
       console.error(error);
+
+      // Reset file and selections so the user can reupload and retry
+      setFile(null);
+      setTargetLang("");
+      setSelectedVoice("21m00Tcm4TlvDq8ikWAM");
+
+      // Clear any partial results
+      setSourceText("");
+      setTranslatedText("");
+      setAudioUrl(null);
+      setStatusTranslated(false);
     } finally {
       setIsTranslating(false);
-      setStatusTranslated(true);
     }
   };
 
@@ -76,7 +106,7 @@ export default function Home() {
 
   return (
     <main className="lg:px-20 md:px-10 px-5 ">
-      {/* Main Action Card - M3 Container */}
+      {/* Main Action Card  */}
       <div className="md:my-10 my-6 w-full bg-[#0f0e0e]  rounded-xl p-6 lg:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border  space-y-8 animate-in zoom-in-95 duration-500 delay-150">
         <section className="space-y-2">
           <h1 className="text-2xl md:text-xl">
@@ -84,16 +114,22 @@ export default function Home() {
             using AI
           </h1>
           <h2 className="text-sm font-medium text-[#ffffff7d] ">
-            STEP 1: SOURCE AUDIO
+            STEP 1: UPLOAD SOURCE AUDIO
           </h2>
-          <FileUpload onFileSelected={setFile} />
+          <div className="my-6 ">
+            <h2 className="pl-2 text-sm text-white/50 font-medium mb-2">Option 1: Record Voice</h2>
+            <VoiceRecorder onRecordingComplete={handleRecordedFile} />
+          </div>
+          <h2 className="pl-2 text-sm text-white/50 font-medium mb-2">Option 2: Upload Voice</h2>
+
+          <FileUpload onFileSelected={setFile} file={file} />
         </section>
 
         {/* Divider */}
 
         <section className="space-y-2">
           <h2 className="text-sm font-medium text-[#ffffff7d] ">
-            STEP 2: TARGET LANGUAGE
+            STEP 2:SELECT TARGET LANGUAGE AND VOICE
           </h2>
           <LanguageSelector
             selectedLang={targetLang}

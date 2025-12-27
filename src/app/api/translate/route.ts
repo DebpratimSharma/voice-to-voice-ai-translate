@@ -19,12 +19,28 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Missing file or language" }, { status: 400 });
     }
 
+    // 1. Check for User Key
+  const userProvidedKey = req.headers.get("x-user-elevenlabs-key");
+  
+  // 2. Determine which key to use (User Key > Admin Key)
+  const apiKeyToUse = userProvidedKey || process.env.ELEVENLABS_API_KEY;
+
+  if (!apiKeyToUse) {
+    return new Response(JSON.stringify({ error: "No API Key found." }), { status: 401 });
+  }
+  else{
+    console.log("Using ElevenLabs API Key:", userProvidedKey ? "User Key" : "Admin Key");
+  }
+
     // --- STEP 1: Transcription (STT) with Groq Whisper ---
     // We pass the raw file directly to Groq
     const transcription = await groq.audio.transcriptions.create({
       file: file,
       model: "whisper-large-v3",
       response_format: "json",
+      // Providing a "Style Guide" in the prompt:
+      prompt:
+        "Um, let me think - the transcript should include pauses, like this, and dashes - for longer breaks.",
     });
 
     const sourceText = transcription?.text;
@@ -64,7 +80,7 @@ export async function POST(req: Request) {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "xi-api-key": process.env.ELEVENLABS_API_KEY!,
+          "xi-api-key": apiKeyToUse,
         },
         body: JSON.stringify({
           text: translatedText,

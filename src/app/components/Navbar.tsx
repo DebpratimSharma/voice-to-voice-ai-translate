@@ -1,6 +1,7 @@
 import React from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { Dropbox } from './Dropbox'
 
 const Navbar = () => {
   return (
@@ -18,13 +19,7 @@ const Navbar = () => {
         <span className='font-semibold text-md'>AI Voice Translator</span>
       </div>
 
-      <Link href="https://github.com/DebpratimSharma/voice-to-voice-ai-translate"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="hover:text-white text-gray-300 transition-all duration-200 "
-      > 
-      Go to repository
-      </Link>
+      <Dropbox />
     </header>
   )
 } 

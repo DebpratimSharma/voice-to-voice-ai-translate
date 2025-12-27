@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import "./globals.css";
 
 // Using Inter, which is very similar to Roboto Flex used in M3
@@ -25,9 +26,11 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body className={`${inter.className} h-full`}>
-        <Navbar />
-        {children}
-        <Footer />
+        <TooltipProvider>
+          <Navbar />
+          {children}
+          <Footer />
+        </TooltipProvider>
       </body>
     </html>
   );
