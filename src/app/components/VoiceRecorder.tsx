@@ -138,7 +138,7 @@ export function VoiceRecorder({ onRecordingComplete }: VoiceRecorderProps) {
   };
 
   return (
-    <div className="w-full  bg-black border  rounded-xl shadow-2xl overflow-hidden relative flex flex-col lg:h-[400px]">
+    <div className="w-full  bg-black border  rounded-xl shadow-2xl overflow-hidden relative flex flex-col pb-0 lg:h-[400px]">
       <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-gray-500 to-transparent opacity-50" />
 
       {/* Header */}
@@ -201,7 +201,7 @@ export function VoiceRecorder({ onRecordingComplete }: VoiceRecorderProps) {
                   if (isPlaying) audioPlayerRef.current?.pause();
                   else audioPlayerRef.current?.play();
                   setIsPlaying(!isPlaying);
-                }} className="w-32">
+                }} className="w-18 md:w-32">
                   {isPlaying ? <Pause size={18} fill="currentColor"/> : <Play size={18} fill="currentColor"/>}
                 </CustomButton>
                 <a href={recordedAudio.url} download="recording.webm">
