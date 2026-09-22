@@ -57,14 +57,6 @@ const languages = [
   // Persian (fa) is currently only in the experimental v3 model
 ];
 
-//sample voices
-const voices = [
-  { id: "21m00Tcm4TlvDq8ikWAM", name: "Rachel (Female - Soft)" },
-//  { id: "cgSgspJ2msm6cl6m55bi", name: "Jessica (Female - Mature)" },
-  { id: "onwK4e9ZLuTAKqWW03F9", name: "Daniel (Male - Deep)" },
-  { id: "pNInz6obpgDQGcFmaJgB", name: "Adam (Male - Deep)" },
-];
-
 export default function LanguageSelector({
   selectedLang,
   setSelectedLang,
@@ -73,15 +65,37 @@ export default function LanguageSelector({
 
 }: LanguageSelectorProps) {
   const [open, setOpen] = React.useState(false);
-  const [value, setValue] = React.useState<string>(selectedLang || "");
+  const [voices, setVoices] = React.useState<{ id: string; name: string }[]>([]);
+  const [voicesError, setVoicesError] = React.useState<string | null>(null);
+  const initialVoice = React.useRef(selectedVoice);
 
   React.useEffect(() => {
-    // keep local value in sync if parent changes selectedLang
-    setValue(selectedLang || "");
-  }, [selectedLang]);
+    const loadVoices = async () => {
+      try {
+        const userApiKey = localStorage.getItem("ai_voice_api_key");
+        const headers: HeadersInit = userApiKey
+          ? { "x-user-elevenlabs-key": userApiKey }
+          : {};
+        const response = await fetch("/api/voices", { headers });
+        if (!response.ok) throw new Error("Unable to load voices");
+
+        const data = await response.json();
+        const availableVoices = data.voices || [];
+        setVoices(availableVoices);
+        setVoicesError(null);
+
+        if (!initialVoice.current && availableVoices[0]) {
+          setSelectedVoice(availableVoices[0].id);
+        }
+      } catch {
+        setVoicesError("Unable to load available voices");
+      }
+    };
+
+    loadVoices();
+  }, [setSelectedVoice]);
 
   function handleSelect(code: string) {
-    setValue(code);
     setSelectedLang(code);
     setOpen(false);
   }
@@ -100,8 +114,8 @@ export default function LanguageSelector({
                 aria-expanded={open}
                 className=" justify-between bg-[#0f0e0e]"
               >
-                {value
-                  ? languages.find((l) => l.code === value)?.name
+                {selectedLang
+                  ? languages.find((l) => l.code === selectedLang)?.name
                   : "Select language..."}
                 <ChevronsUpDown className="opacity-50" />
               </Button>
@@ -126,7 +140,7 @@ export default function LanguageSelector({
                         <Check
                           className={cn(
                             "ml-auto",
-                            value === lang.code ? "opacity-100" : "opacity-0"
+                            selectedLang === lang.code ? "opacity-100" : "opacity-0"
                           )}
                         />
                       </CommandItem>
@@ -142,7 +156,7 @@ export default function LanguageSelector({
         <MicVocal className="mr-[15px]  h-6 w-6 text-white" />
         <Select value={selectedVoice} onValueChange={(v) => setSelectedVoice(v)}>
           <SelectTrigger className="bg-[#121212] hover:bg-[#262626]">
-            <SelectValue placeholder="Select Voice" />
+            <SelectValue placeholder={voicesError || "Loading available voices..."} />
           </SelectTrigger>
           <SelectContent className="">
             {voices.map((voice) => (

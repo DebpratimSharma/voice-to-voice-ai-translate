@@ -9,7 +9,7 @@ import { Sparkles } from "lucide-react";
 export default function Home() {
   const [file, setFile] = useState<File | null>(null);
   const [targetLang, setTargetLang] = useState("");
-  const [selectedVoice, setSelectedVoice] = useState("21m00Tcm4TlvDq8ikWAM"); // Default: Rachel
+  const [selectedVoice, setSelectedVoice] = useState("");
   const [isTranslating, setIsTranslating] = useState(false);
   const [statusTranslated, setStatusTranslated] = useState(false);
   const [sourceText, setSourceText] = useState("");
@@ -80,7 +80,7 @@ export default function Home() {
       // Reset file and selections so the user can reupload and retry
       setFile(null);
       setTargetLang("");
-      setSelectedVoice("21m00Tcm4TlvDq8ikWAM");
+      setSelectedVoice("");
 
       // Clear any partial results
       setSourceText("");

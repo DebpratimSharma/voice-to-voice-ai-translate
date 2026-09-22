@@ -64,7 +64,7 @@ export async function POST(req: Request) {
           content: sourceText,
         },
       ],
-      model: "llama-3.3-70b-versatile",
+      model: "openai/gpt-oss-20b",
     });
 
     const translatedText = translationCompletion.choices[0]?.message?.content || "";
